@@ -14,10 +14,10 @@ def cread():
     return json.load(f)
 
 if not os.path.isfile(home+'/config.json'):
-	shutil.copy(home+'/default/config.json', home+'config.json')
+	shutil.copy(home+'/default/config.json', home+'/config.json')
 
 if not os.path.isfile(home+'/dashboard.ipynb'):
-	shutil.copy(home+'/default/dashboard.ipynb', home+'dashboard.ipynb')
+	shutil.copy(home+'/default/dashboard.ipynb', home+'/dashboard.ipynb')
 
 config = cread()
 if not config.has_key('exfolder'):
