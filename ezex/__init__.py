@@ -10,7 +10,7 @@ if not os.path.isdir(home):
 	os.mkdir(home)
 
 def cwrite(data):
-  with open(home+'/config.json','w') as f:
+  with open(home+'/config.json','w+') as f:
     json.dump(data,f)
 
 def cread():

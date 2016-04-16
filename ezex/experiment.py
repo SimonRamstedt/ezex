@@ -10,7 +10,7 @@ import __init__ as ezex
 import util
 
 def xwrite(path,data):
-  with open(path+'/ezex.json','w') as f:
+  with open(path+'/ezex.json','w+') as f:
     json.dump(data,f)
 
 def xread(path):
@@ -71,7 +71,7 @@ def submit(path):
   xwrite(path,x)
 
 
-def execute(path,deltime=7*60):
+def execute(path,deltime=3*60):
   x = xread(path)
   t_start = time.time()
   try:
@@ -87,12 +87,13 @@ def execute(path,deltime=7*60):
     print "aborted"
   finally:
     elapsed = time.time() - t_start
+    x['end_time'] = time.time()
+    xwrite(path,x)
     print 'elapsed seconds: ' + str(elapsed)
     if elapsed <= deltime:
       shutil.rmtree(path,ignore_errors=False)
 
-    x['end_time'] = time.time()
-    xwrite(path,x)
+
 
 
 def kill(path):

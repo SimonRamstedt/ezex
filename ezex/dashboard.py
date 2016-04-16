@@ -83,12 +83,8 @@ def dashboard(max=8):
             # update plot
             try:
               x = np.load(self.e.path()+'/ezex.npy')
-              #r = self.e.test_r
-              #i = self.e.test_i
             except:
-              #r = 0
-              #i = 0
-              x = [[0,0],[1,1]]
+              x = np.zeros([1,2])
 
             #f = plt.figure()
             #f = Figure()

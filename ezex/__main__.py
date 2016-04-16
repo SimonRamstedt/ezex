@@ -66,7 +66,13 @@ if args.command == 'dashboard':
 	c['tb'] = args.tb
 	ezex.cwrite(c)
 
-	proc = subprocess.Popen(('jupyter notebook --port='+str(args.ip) +' '+c['exfolder']).split(' '))
+	proc = subprocess.Popen(('jupyter notebook --no-browser --port='+str(args.ip) +' '+c['exfolder']).split(' '))
+
+	if not os.path.exists(ezex.home+'/home'):
+		cwd = os.getcwd()
+		os.chdir(ezex.home)
+		os.symlink(os.path.expanduser('~'),'home')
+		os.chdir(cwd)
 
 	f = ezex.home+'/dashboard.ipynb'
 	os.system('jupyter notebook --port='+str(args.db) +' '+f)
@@ -78,7 +84,7 @@ if args.command == 'remote':
 	import thread
 	import webbrowser
 
-	webbrowser.open_new_tab('http://localhost:'+str(args.db)+'/tree/dashboard.ipynb')
+	webbrowser.open_new_tab('http://localhost:'+str(args.db)+'/tree/.ezex/dashboard.ipynb')
 
 	util.free_port(args.db)
 	util.free_port(args.ip)
