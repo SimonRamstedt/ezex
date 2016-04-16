@@ -64,7 +64,7 @@ def dashboard(max=8):
       
       def ontb(_,self=self):
         #folder = tensorboard.tbfolder([self.e])
-        folder = self.e.path()+'/tb'
+        folder = self.e.path()
         killtb()
         tb = Tensorboard(folder,port=ezex.config['tb'],stdout=True)
         here.tb = tb
