@@ -26,9 +26,10 @@ if not os.path.isfile(home+'/dashboard.ipynb'):
 config = cread()
 if not config.has_key('exfolder'):
   config['exfolder'] = home+'/experiments'
-  if not os.path.isdir(config['exfolder']):
-  	os.mkdir(config['exfolder'])
-  	
+  
+if not os.path.isdir(config['exfolder']):
+	os.mkdir(config['exfolder'])
+
 if not config.has_key('scheduler'):
   config['scheduler'] = 'lsf'
 cwrite(config)

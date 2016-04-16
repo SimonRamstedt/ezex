@@ -13,6 +13,10 @@ positional arguments:
     set                 set global ezex variables (e.g. experiment folder)
 
 ```
+#### ezex dashboard
+![dashboard](doc/db.png)
+ezex dashboard opens a jupyter notebook which can be used to visualize the experiments (type *Shift+Enter* to execute a cell). If [TensorFlow](https://www.tensorflow.org/) is installed, experiments can also be visualized in tensorboard by clicking on *tensorboard* and then on *open*. Currently only one experiemnt at a time can be visualized in tensorboard.
+
 
 ### Installation
 ```
@@ -22,3 +26,4 @@ or
 ```
 pip install ezex --user
 ```
+in the second case it might be nessessary to add the line `export PATH=$PATH:$HOME/.local/bin` to `~/.profile`. The experiment folder can be changed e.g. via `ezex set -exfolder /home/$USER/scratch/ezex-experiments`
