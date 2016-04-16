@@ -79,14 +79,17 @@ def execute(path,deltime=7*60):
     x['run_status'] = 'running'
     xwrite(path,x)
     print cmd
-    os.system(cmd)
+    #os.system(cmd)
+    subprocess.check_call(cmd,shell=True)
     x['run_status'] = 'finished'
   except:
     x['run_status'] = 'aborted'
+    print "aborted"
   finally:
     elapsed = time.time() - t_start
+    print 'elapsed seconds: ' + str(elapsed)
     if elapsed <= deltime:
-      delete(path)
+      shutil.rmtree(path,ignore_errors=False)
 
     x['end_time'] = time.time()
     xwrite(path,x)

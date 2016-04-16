@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import time
 import thread
 import tensorboard
+import numpy as np
 from tensorboard import Tensorboard
 import experiment
 import cStringIO
@@ -81,17 +82,21 @@ def dashboard(max=8):
           try:
             # update plot
             try:
-              r = self.e.test_r
-              i = self.e.test_i
+              x = np.load(self.e.path()+'/ezex.npy')
+              #r = self.e.test_r
+              #i = self.e.test_i
             except:
-              r = 0
-              i = 0
+              #r = 0
+              #i = 0
+              x = [[0,0],[1,1]]
+
             #f = plt.figure()
             #f = Figure()
             f,ax = plt.subplots()
             f.set_size_inches((15,2.5))
             f.set_tight_layout(True)
-            ax.plot(i,r)
+            ax.plot(x[:,0],x[:,1])
+            #ax.plot(i,r)
             sio = cStringIO.StringIO()
             f.savefig(sio, format='png',dpi=60)
 
