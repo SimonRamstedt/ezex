@@ -30,8 +30,9 @@ p_run.add_argument('-nvd',action='store_true',help='run on Nvidia-Node')
 p_run.add_argument('-preload',default=None,help='LD_PRELOAD=<PRELOAD> (path relative to script folder)')
 p_run.add_argument('-prerun',default=None,help='run this command before the main script')
 
-p_set = subparsers.add_parser('set', help='set global ezex variables (e.g. experiment folder)')
+p_set = subparsers.add_parser('set', help='set user ezex variables (stored in ~/.ezex/)')
 p_set.add_argument('-exfolder',help='path to experiment folder')
+p_set.add_argument('-scheduler',help='lsf or slurm')
 
 p_exe = subparsers.add_parser('execute', help='locally run python script (internal)')
 p_exe.add_argument('path',help='path to experiment')
@@ -45,6 +46,8 @@ if args.command == 'set':
 		if not os.path.isdir(args.exfolder):
 			os.mkdir(args.exfolder)
 		c['exfolder'] = args.exfolder
+	if args.scheduler:
+		c['scheduler'] = args.scheduler
 	ezex.cwrite(c)
 
 
