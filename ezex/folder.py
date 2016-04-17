@@ -91,7 +91,7 @@ class Folder(object):
         dst = p.join(self.path(),tail)
         if p.islink(f):
           linkto = p.abspath(f+'/.')
-          print linkto
+          print(linkto)
           os.symlink(linkto, dst)
         elif p.isdir(f):
           Folder.copy(self[tail],other[tail])
@@ -188,4 +188,4 @@ class Folder(object):
       
   
 if __name__ == "__main__":
-  print "test"
+  print("test")

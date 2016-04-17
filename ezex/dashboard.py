@@ -101,7 +101,7 @@ def dashboard(max=8):
             sio.close()
             plt.close(f)
           except:
-            pass #print ex
+            pass
 
       self.th = thread.start_new_thread(loop_fig,())
 
@@ -153,7 +153,6 @@ def dashboard(max=8):
         time.sleep(0.5)
       except Exception as ex:
           pass
-          #print ex
 
   th = thread.start_new_thread(loop,())
   

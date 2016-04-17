@@ -51,7 +51,7 @@ def submit(path):
       '-oo '+path+'/out_%J '+
       '\''+ 'ezex execute ' + path +'\'')
 
-    print cmd
+    print(cmd)
     out = subprocess.check_output(cmd,shell=True)
     
     import re
@@ -78,18 +78,18 @@ def execute(path,deltime=3*60):
     cmd = x['cmd']
     x['run_status'] = 'running'
     xwrite(path,x)
-    print cmd
+    print(cmd)
     #os.system(cmd)
     subprocess.check_call(cmd,shell=True)
     x['run_status'] = 'finished'
   except:
     x['run_status'] = 'aborted'
-    print "aborted"
+    print("aborted")
   finally:
     elapsed = time.time() - t_start
     x['end_time'] = time.time()
     xwrite(path,x)
-    print 'elapsed seconds: ' + str(elapsed)
+    print('elapsed seconds: ' + str(elapsed))
     if elapsed <= deltime:
       shutil.rmtree(path,ignore_errors=False)
 
@@ -139,6 +139,6 @@ def delete(path):
       time.sleep(0.2)
 
     if not suc:
-      print exc
+      print(exc)
 
   thread.start_new_thread(deletet,())

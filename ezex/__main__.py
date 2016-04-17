@@ -29,6 +29,7 @@ p_run.add_argument('-l',action='store_true',help='run on this machine')
 p_run.add_argument('-nvd',action='store_true',help='run on Nvidia-Node')
 p_run.add_argument('-preload',default=None,help='LD_PRELOAD=<PRELOAD> (path relative to script folder)')
 p_run.add_argument('-prerun',default=None,help='run this command before the main script')
+p_run.add_argument('-python2',action='store_true',help='use "python2" instead of "python" to run the script')
 
 p_set = subparsers.add_parser('set', help='set user ezex variables (stored in ~/.ezex/)')
 p_set.add_argument('-exfolder',help='path to experiment folder')
@@ -52,9 +53,9 @@ if args.command == 'set':
 
 
 if args.command == 'dashboard':
-	print 'Experiment root folder at: ' + ezex.config['exfolder']
-	print 'containing ' + str(len(ezex.exfolder[:])) + ' experiments'
-	print ''
+	print('Experiment root folder at: ' + ezex.config['exfolder'])
+	print('containing ' + str(len(ezex.exfolder[:])) + ' experiments')
+	print('')
 
 	util.free_port(args.db)
 	util.free_port(args.ip)
@@ -109,17 +110,18 @@ if args.command == 'run':
 
 	preload = '' if not args.preload else 'LD_PRELOAD='+ args.preload
 	prerun = '' if not args.prerun else args.prerun+';'
-	cmd = '/bin/bash -c "'+ prerun +'cd '+ path +';'+ preload +' python '+run_script+'"'
+	python = 'python2' if args.python2 else 'python'
+	cmd = '/bin/bash -c "'+ prerun +'cd '+ path +';'+ preload +' '+python+' '+run_script+'"'
 
 	experiment.xwrite(path,{'run_type':'local' if args.l else 'job',
 													'run_status':'pending',
 													'nvd':args.nvd,
 													'cmd':cmd})
 	if args.l:
-	  print 'run local'
+	  print('run local')
 	  experiment.execute(path)
 	else:
-	  print 'submit job'
+	  print('submit job')
 	  experiment.submit(path)
 
 
