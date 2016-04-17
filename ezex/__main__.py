@@ -85,7 +85,7 @@ if args.command == 'remote':
 	import thread
 	import webbrowser
 
-	webbrowser.open_new_tab('http://localhost:'+str(args.db)+'/tree/.ezex/dashboard.ipynb')
+	webbrowser.open_new_tab('http://localhost:'+str(args.db)+'/tree/dashboard.ipynb')
 
 	util.free_port(args.db)
 	util.free_port(args.ip)
