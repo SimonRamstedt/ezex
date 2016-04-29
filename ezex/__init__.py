@@ -31,8 +31,10 @@ if not os.path.isdir(config['exfolder']):
 	os.mkdir(config['exfolder'])
 
 if not config.has_key('scheduler'):
-  config['scheduler'] = 'lsf'
+  config['scheduler'] = 'slurm'
 cwrite(config)
 
 exfolder = Folder(config['exfolder'],create=False)
+
+
 

@@ -20,11 +20,140 @@ import os
 import __init__ as ezex
 from ezex import Folder
 
-style_hlink = '<style>.hlink{padding: 5px 10px 5px 10px;display:inline-block;}</style>'
 
-exps = ezex.exfolder
+
+def load(pattern):
+  import glob
+  import numpy as np
+  data = [np.load(f) for f in glob.glob(ezex.config['exfolder']+'/'+pattern)]
+  return data
+
+def smooth(x,window_len=11,window='hanning'):
+    """smooth the data using a window with requested size.
+    
+    This method is based on the convolution of a scaled window with the signal.
+    The signal is prepared by introducing reflected copies of the signal 
+    (with the window size) in both ends so that transient parts are minimized
+    in the begining and end part of the output signal.
+    
+    input:
+        x: the input signal 
+        window_len: the dimension of the smoothing window; should be an odd integer
+        window: the type of window from 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'
+            flat window will produce a moving average smoothing.
+
+    output:
+        the smoothed signal
+        
+    example:
+
+    t=linspace(-2,2,0.1)
+    x=sin(t)+randn(len(t))*0.1
+    y=smooth(x)
+    
+    see also: 
+    
+    numpy.hanning, numpy.hamming, numpy.bartlett, numpy.blackman, numpy.convolve
+    scipy.signal.lfilter
+ 
+    TODO: the window parameter could be the window itself if an array instead of a string
+    NOTE: length(output) != length(input), to correct this: return y[(window_len/2-1):-(window_len/2)] instead of just y.
+    """ 
+     
+    if x.ndim != 1:
+        raise ValueError, "smooth only accepts 1 dimension arrays."
+
+    if x.size < window_len:
+        raise ValueError, "Input vector needs to be bigger than window size."
+        
+
+    if window_len<3:
+        return x
+    
+    
+    if not window in ['flat', 'hanning', 'hamming', 'bartlett', 'blackman']:
+        raise ValueError, "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+    
+
+    s=np.r_[x[window_len-1:0:-1],x,x[-1:-window_len:-1]]
+    #print(len(s))
+    if window == 'flat': #moving average
+        w=np.ones(window_len,'d')
+    else:
+        w=eval('np.'+window+'(window_len)')
+    
+    y=np.convolve(w/w.sum(),s,mode='valid')
+    return y    
+
+
+def hist(pattern,savename,size=(12,4),color = "#99c2d7",scale=1):
+    f,ax = plt.subplots()
+    f.set_size_inches(*size)
+    #f.set_tight_layout(True)
+    #T = 132
+
+    #color = "#009cda"
+    
+
+    #E = [ezex.exp_folder[n] for n in N]
+    #R = [e.test_r for e in E]
+    #I = E[0].test_i
+    data = load(pattern+'/ezex.npy')
+    R = [d[:,1] for d in data]
+    I = data[0][:,0]
+
+    first = 1
+    T = np.min([len(r) for r in R])
+    
+    r = [ri[first:T-1] for ri in R]
+    r = np.vstack(r)
+    #print r
+
+    i = np.linspace(0,1,T-1-first)
+
+    # TODO: remove HACK!
+    r = (r+300)*scale - 300
+    # h = np.max(r)
+    # l = np.min(r)
+
+    #r = (r - l) / (h-l) 
+    #print r
+
+    # max = np.max(r,axis=0)
+    # med = np.mean(r,axis=0)
+    # min = np.min(r,axis=0)
+    max = np.percentile(r,75,axis=0)
+    med = np.percentile(r,50,axis=0)
+    min = np.percentile(r,25,axis=0)
+
+    ax.plot(i,med,'k-')
+    ax.fill_between(i, min, max,color=color)
+    ax.get_yaxis().set_ticks([-300-30,-45+30])
+    ax.get_yaxis().set_ticklabels(['',''])
+    ax.get_xaxis().set_ticks([0,1])
+    ax.get_xaxis().set_ticklabels(["0",str(int(np.round(I[T-1]/100000)*100000))])
+    offs = 1.005 # -0.07
+
+    K = -45 #0.7
+    ax.axhline(K,color='k',ls='dashed')
+    ax.text(offs,K,'optimal',rotation=0)
+
+    L = -100 #0.7
+    ax.axhline(L,color='k',ls='dashed')
+    ax.text(offs,L,'balance',rotation=0)
+
+    M = -220 #0.45
+    ax.axhline(M,color='k',ls='dashed')
+    ax.text(offs,M,'swingup',rotation=0)
+
+    #p = os.path.expanduser('~/'+name+'.png')
+    p = os.path.expanduser(savename)
+    f.savefig(p, format='png',dpi=120)
 
 def dashboard(max=8):
+  style_hlink = '<style>.hlink{padding: 5px 10px 5px 10px;display:inline-block;}</style>'
+  exps = ezex.exfolder
+
   here = Folder('.')
   
   def killtb():

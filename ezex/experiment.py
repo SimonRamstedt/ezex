@@ -47,8 +47,8 @@ def submit(path):
   x = xread(path)
   if ezex.config['scheduler']=='lsf':
     nvd = 'select[nvd]' if x['nvd'] else ''
-    cmd = ('bsub -q deflt_centos -M 20000 -W 24:00 -n 1 -R "'+nvd+'" -x '+
-      '-oo '+path+'/out_%J '+
+    cmd = ('bsub -q deflt_centos -M 20000 -W 24:00 -n 4 -R "'+nvd+'" -x '+
+      '-oo '+path+'/out '+
       '\''+ 'ezex execute ' + path +'\'')
 
     print(cmd)
@@ -62,8 +62,32 @@ def submit(path):
       raise RuntimeError()
 
   elif ezex.config['scheduler']=='slurm':
-    # TODO
-    raise RuntimeError('SLURM not yet supported')
+    nvd = '#SBATCH -C nvd \n' if x['nvd'] else ''
+    print(path)
+    jscr = ("#!/bin/bash" + '\n' +
+            "#SBATCH -o " + path + '/out' + '\n' +
+            "#SBATCH --mem-per-cpu=" + "5000" + '\n' +
+            "#SBATCH -n 4" + '\n' +
+            "#SBATCH -t 24:00:00" + "\n" +
+            nvd +
+            "ezex execute " + path)
+
+    with open(path+"/slurmjob","w") as f:
+      f.write(jscr)
+
+    cmd = "sbatch " + path + "/slurmjob"
+
+    out = subprocess.check_output(cmd,shell=True)
+    print("SUBMIT: \n" + out)
+
+    import re
+    #match = re.match('Submitted batch job (\d*)',out)
+    match = re.search('Submitted batch job (\d*)',out)
+    if match:
+      jid = match.group(1)
+    else:
+      raise RuntimeError()
+
   else:
     raise RuntimeError('No scheduling system (e.g. SLURM) present')
 
@@ -100,9 +124,12 @@ def kill(path):
   try:
     x = xread(path)
     if ezex.config['scheduler']=='lsf':
-      id = x['job_id']
-      cmd = 'bkill '+str(id)
+      jid = x['job_id']
+      cmd = 'bkill '+str(jid)
       out = subprocess.check_output(cmd,shell=True)
+    elif ezex.config['scheduler']=='slurm':
+      jid = x['job_id']
+      cmd = 'scancel '+str(jid)
     else:
       return False
   except Exception as ex:

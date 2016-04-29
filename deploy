@@ -1,0 +1,5 @@
+git add .
+git commit -m "deploy"
+git push
+
+python setup.py register sdist upload
