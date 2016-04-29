@@ -22,3 +22,9 @@ or
 pip install ezex --user
 ```
 In the second case it might be nessessary to add `export PATH=$PATH:$HOME/.local/bin` to `~/.bashrc`. The experiment folder can be changed e.g. via `ezex set -exfolder <path>`.
+
+If the dashboard throws a js-widgets error it might be nessessary to install and activate ipywidgets manually via:
+```
+pip install ipywidgets
+jupyter nbextension enable --py widgetsnbextension
+```

@@ -130,6 +130,7 @@ def kill(path):
     elif ezex.config['scheduler']=='slurm':
       jid = x['job_id']
       cmd = 'scancel '+str(jid)
+      out = subprocess.check_output(cmd,shell=True)
     else:
       return False
   except Exception as ex:

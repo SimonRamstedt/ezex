@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='ezex',
-      version='0.2.6',
+      version='0.2.7',
       description='lightweigt destributed experimentation framework',
       url='https://github.com/SimonRamstedt/ezex',
       author='Simon Ramstedt',
